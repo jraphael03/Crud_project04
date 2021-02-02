@@ -1,0 +1,139 @@
+html{
+  font-size: 62.5%; /* 16px x 62.5 = 10px = 1rem */
+}
+
+body{
+  margin: 0;
+  height: 100vh;
+  font-size: 1.6rem;
+}
+
+/* Layout */
+.grid-container{
+  display: grid;
+  grid-template-areas:
+  'header header'
+  'nav nav'
+  'sidebar main'
+  'footer footer';
+  grid-template-rows: auto auto 1fr 5rem;    /* header auto fill, nav auto fill, main 1row, footer auto fill */
+  grid-template-columns: 20% auto;   /* 20%left grid and rest autofill */
+}
+
+header{
+  grid-area: header;
+  background-color: #000000;
+  color: #ffffff;
+}
+
+nav{
+  grid-area: nav;
+  display: flex;
+  flex: wrap;
+  justify-content: space-evenly;
+  background-color: #fffb00;
+}
+
+main{
+  grid-area: main;
+  padding: 1rem;
+}
+
+aside{
+  grid-area: sidebar;
+  grid-template-rows: repeat(4, auto);
+  background-color: #00d9ff;
+  display: flex;
+  justify-content: flex-start;
+}
+
+footer{
+  grid-area: footer;
+  background-color: #000000;
+  color: #ffffff;
+  margin: 0;
+  align-self: end;
+}
+
+/* Common */
+
+a{
+  text-decoration: none;
+}
+
+header a{
+    color: #ffffff;
+}
+
+nav a{
+  color: #000000;
+  font-size: 1.8rem;
+}
+
+a:hover{
+  color: blue;
+}
+
+li{
+  list-style-type: none;
+}
+
+.row{
+  display: flex;
+  flex: wrap;
+  justify-content: center;
+}
+
+.row.center{
+  display: flex;
+  justify-content: center;
+}
+
+
+/* Card */
+.card{
+  border: 0.1rem #010b96 solid;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  padding: 1rem;
+}
+
+.card > *{
+  margin-bottom: 0.5rem;
+}
+
+.inputCard{
+  border: 0.1rem #000000 solid;
+  background-color: #ffffff;
+  border-radius: 0.5rem;
+  margin: 1rem;
+  padding: 1rem;
+  width: 50%;
+  display: flex;
+  justify-content: center;
+}
+
+.labelCard{
+  padding-right: 20%;
+  background-color: #00d9ff;
+}
+
+form{
+  justify-content: center;
+}
+
+
+@media screen and (max-width: 39.9375em){
+  .grid-container{
+  display: grid;
+  grid-template-areas:
+  'header'
+  'nav'
+  'sidebar'
+  'main'
+  'footer';
+  grid-template-rows: auto auto 1fr 5rem;    /* header auto fill, nav auto fill, main 1row, footer auto fill */
+  grid-template-columns: 1fr;   /* 20%left grid and rest autofill */
+}
+}
