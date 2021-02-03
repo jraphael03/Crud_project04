@@ -1,14 +1,38 @@
 const express = require('express');
 const mysql = require('mysql');
 const cors = require('cors');
+const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
+const session = require('express-session');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 
 
 const app = express();
 const port = 5000;
 
-app.use(cors());
-app.use(express.json());
 
+app.use(express.json());
+app.use(cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST"],
+    credentials: true
+}));
+app.use(cookieParser());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+
+
+//  INITIALIZE SESSION
+app.use(session({
+    key: "userId",
+    secret: "secret",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60 * 60 * 24,
+    },
+}))
 
 // IMPORT MYSQL
 const db = mysql.createConnection({
@@ -19,7 +43,69 @@ const db = mysql.createConnection({
 });
 
 
-// GET DATA FROM DATABASE
+// POST ACCOUNT TO DB
+app.post('/register', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    bcrypt.hash(password, saltRounds, (err, hash) => {
+        if(err){
+            console.log(err)
+        }
+            db.query(
+              "INSERT INTO accounts (username, password) VALUES (?,?)",
+              [username, hash],
+              (err, result) => {
+                console.log(err);
+              }
+            );
+    })
+
+
+})
+
+
+// GET FOR LOGIN
+app.get("/login", (req, res) => {
+    if (req.session.user){
+        res.send({ loggedIn: true, user: req.session.user })
+    } else{
+        res.send({ loggedIn: false });
+    }
+})
+
+
+//LOG INTO ACCOUNT
+app.post('/login', (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    db.query(
+        "SELECT * FROM accounts WHERE username = ?;",
+        username,
+        (err, result) => {
+            if(err){
+                res.send({ err: err })
+            } 
+                if (result.length > 0){
+                    bcrypt.compare(password, result[0].password, (err, response) => {
+                        if(response) {
+                            req.session.user = result
+                            console.log(req.session.user);
+                            res.send(result)
+                        }else {
+                            res.send({ message: "Wrong Username and/or Password" })
+                        }
+                    })
+                } else {
+                    res.send({ message: "User does not exist" })
+                }
+        }
+    )
+})
+
+
+// GET DATA FROM DATABASE (QUESTIONS.JS/SIDEBAR.JS)
 app.get('/questions', (req, res) => {
     db.query("SELECT * FROM questions", 
     (err, result) => {
@@ -32,7 +118,7 @@ app.get('/questions', (req, res) => {
 })
 
 
-// POST DATA TO DATABASE
+// POST DATA TO DATABASE (QUESTIONS.JS)
 app.post('/create', (req, res) => {
     const question = req.body.question;
     const cid = req.body.cid;
@@ -49,7 +135,7 @@ app.post('/create', (req, res) => {
 })
 
 
-// UPDATE DATA IN DATABASE
+// UPDATE DATA IN DATABASE (QUESTIONS.JS)
 app.put('/update', (req, res) => {
     const qid = req.body     //What should go here??
     const question = req.body.question;
@@ -64,7 +150,7 @@ app.put('/update', (req, res) => {
 
 
 
-// DELETE DATA FROM THE DATABASE
+// DELETE DATA FROM THE DATABASE (QUESTIONS.JS)
 app.delete('/delete', (req, res) => {
     const qid = req.params      //What should go here???
     db.query("DELETE FROM questions WHERE qid =?", qid, (err, result) => {
@@ -75,6 +161,7 @@ app.delete('/delete', (req, res) => {
         }
     })
 })
+
 
 // MAIN PAGE NODE
 const home = (req,res) => {

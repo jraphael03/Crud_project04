@@ -1,9 +1,73 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from 'axios';
 
 const SignIn = () => {
+
+    // REGISTER 
+    const [usernameReg, setUsernameReg] = useState('');
+    const [passwordReg, setPasswordReg] = useState('');
+
+    const register = () => {
+        axios.post('http://localhost:5000/register', {
+            username: usernameReg,
+            password: passwordReg,
+        }).then((response) => {
+            console.log(response);
+        })
+    }
+
+
+    axios.defaults.withCredentials = true;
+
+    //LOGIN
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+
+    const [loginStatus, setLoginStatus] = useState("");
+
+    const login = () => {
+        axios.post("http://localhost:5000/login", {
+            username: username,
+            password: password,
+        }).then((response) => {
+
+            if(response.data.message){
+                setLoginStatus(response.data.message)
+            }else{
+                setLoginStatus(response.data[0].username)
+            }
+        })
+    }
+
+    useEffect(() => {
+        axios.get("http://localhost:5000/login").then((response) => {
+            //console.log(response);
+            if(response.data.loggedIn == true){
+            setLoginStatus(response.data.user[0].username)
+            }
+        })
+    }, [])
+
   return (
     <div>
-      <h1>Sign In</h1>
+        <div className="registration">
+            <h1>Registration</h1>
+            <label htmlFor="">Username</label>
+            <input type="text" onChange={(e) => {setUsernameReg(e.target.value)}} />
+            <label htmlFor="">Password</label>
+            <input type="password" onChange={(e) => {setPasswordReg(e.target.value)}} />
+            <button onClick={register} > Registration </button>
+        </div>
+
+
+        <div className="login">
+            <h1>Login</h1>
+            <input type="text" placeholder="Username" onChange={(e) => {setUsername(e.target.value)}} />
+            <input type="password" placeholder="Password" onChange={(e) => {setPassword(e.target.value)}} />
+            <button onClick={login} > Login </button>
+
+            <h1>{loginStatus}</h1>
+        </div>
     </div>
   );
 };

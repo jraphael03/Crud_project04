@@ -13,15 +13,14 @@ npm body-parser
 npm install mysql
 npm install nodemon
 npm install cors
-
+npm install express-promise-router
+npm install uuid
+npm install bcrypt
+npm install express-session
+npm install body-parser
+npm install cookie-parser
 
 
 onClick={() => getQuestions = setShowQuestions(!showQuestions)}  
 
 
-                <select>
-                  <option value="">Football</option>
-                  <option value="">Basketball</option>
-                  <option value="">Baseball</option>
-                  <option value="">MMA</option>
-                </select>
