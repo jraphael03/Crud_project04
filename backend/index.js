@@ -139,7 +139,7 @@ app.post('/create', (req, res) => {
 
 // UPDATE DATA IN DATABASE (QUESTIONS.JS)
 app.put('/update', (req, res) => {
-    const qid = req.body     //What should go here??
+    const qid = req.body.qid;     //What should go here??
     const question = req.body.question;
     db.query("UPDATE questions SET question = ? WHERE qid = ?", [question, qid], (err, result) => {
         if(err){
@@ -154,7 +154,7 @@ app.put('/update', (req, res) => {
 
 // DELETE DATA FROM THE DATABASE (QUESTIONS.JS)
 app.delete('/delete', (req, res) => {
-    const qid = req.params      //What should go here???
+    const qid = req.params.qid;      //What should go here???
     db.query("DELETE FROM questions WHERE qid =?", qid, (err, result) => {
         if(err) {
             console.log(err);
