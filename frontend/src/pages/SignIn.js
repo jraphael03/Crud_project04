@@ -42,7 +42,7 @@ const SignIn = () => {
     useEffect(() => {
         axios.get("http://localhost:5000/login").then((response) => {
             //console.log(response);
-            if(response.data.loggedIn == true){
+            if(response.data.loggedIn === true){
             setLoginStatus(response.data.user[0].username)
             }
         })

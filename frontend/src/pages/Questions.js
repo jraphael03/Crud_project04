@@ -34,11 +34,15 @@ function Questions () {
 
     // POST DATA TO BACKEND
     const addQuestion = () => {
+        console.log('step:2')
+        console.log(question)
+        console.log(cid.value)
         axios.post("http://localhost:5000/create", {
             question: question,
-            cid: cid,
+            cid: cid.value
           })
           .then(() => {
+              console.log(questions)
             setQuestions([...questions, { question: question }]);
             console.log("success");
           });
@@ -50,7 +54,7 @@ function Questions () {
         axios.put("http://localhost:5000/update", {question: newQuestion, qid: qid}.then(
             (response) => {
                 setQuestions(questions.map((val) =>{
-                    return val.qid == qid
+                    return val.qid === qid
                       ? { qid: val.qid, question: val.question } : val;         //is the user the same as the id we changed if so display new objects, else is isn't the user just pass val
                 }))
             }
@@ -89,7 +93,6 @@ function Questions () {
               </div>
             );
           })}
-          <form className="inputCard" action="">
             <div>
               <label className="labelCard" htmlFor="">
                 Question:
@@ -114,7 +117,6 @@ function Questions () {
                 <button onClick={addQuestion}>Add Question</button>
               </div>
             </div>
-          </form>
         </div>
       </>
     );

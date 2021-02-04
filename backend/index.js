@@ -120,9 +120,11 @@ app.get('/questions', (req, res) => {
 
 // POST DATA TO DATABASE (QUESTIONS.JS)
 app.post('/create', (req, res) => {
+    console.log(req)
     const question = req.body.question;
     const cid = req.body.cid;
-
+    console.log(cid);
+    console.log(question)
     db.query("INSERT INTO questions (question, cid) VALUES (?,?)"
     [question, cid], (err, result) =>{
         if(err){
